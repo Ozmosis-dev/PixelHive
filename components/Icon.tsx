@@ -1,6 +1,7 @@
-import type { SVGProps } from "react";
+import type { ReactElement, SVGProps } from "react";
 
-type IconProps = SVGProps<SVGSVGElement> & { size?: number };
+export type IconProps = SVGProps<SVGSVGElement> & { size?: number };
+export type IconComponent = (props: IconProps) => ReactElement;
 
 function base({ size = 24, strokeWidth, ...props }: IconProps) {
   return {
