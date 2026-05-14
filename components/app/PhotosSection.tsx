@@ -54,17 +54,20 @@ const photos: Photo[] = [
   },
 ];
 
-export default function PhotosSection() {
+export default function PhotosSection({ headerAction }: { headerAction?: React.ReactNode } = {}) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
     <>
       <div className="rounded-[16px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.08] bg-white dark:bg-[#10151D] p-6 shadow-[0_2px_8px_rgba(23,26,32,0.04)]">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h3 className="font-inter text-[14px] font-bold text-ph-azure11 dark:text-ph-zircon">Attachments</h3>
-          <div className="inline-flex items-center rounded-full border border-[rgba(23,26,32,0.06)] dark:border-white/[0.08] bg-white dark:bg-[#10151D] p-0.5">
-            <button className="rounded-full bg-ph-azure11 px-3 py-1 font-inter text-[12px] font-semibold text-white">Recent</button>
-            <button className="rounded-full px-3 py-1 font-inter text-[12px] font-semibold text-ph-azure11/55 dark:text-ph-zircon/55">By group</button>
+          <div className="flex items-center gap-3">
+            {headerAction}
+            <div className="inline-flex items-center rounded-full border border-[rgba(23,26,32,0.06)] dark:border-white/[0.08] bg-white dark:bg-[#10151D] p-0.5">
+              <button className="rounded-full bg-ph-azure11 px-3 py-1 font-inter text-[12px] font-semibold text-white">Recent</button>
+              <button className="rounded-full px-3 py-1 font-inter text-[12px] font-semibold text-ph-azure11/55 dark:text-ph-zircon/55">By group</button>
+            </div>
           </div>
         </div>
 
