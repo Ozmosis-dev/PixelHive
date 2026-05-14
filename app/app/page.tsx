@@ -162,19 +162,35 @@ const activityToneDot: Record<string, string> = {
   neutral: "bg-ph-azure11/30 dark:bg-white/30",
 };
 
-// Upcoming jobs
-const upcoming = [
-  { client: "Compass Northwest", color: "#3B82F6", title: "Rodeo Dr, Beverly Hills", when: "Today · 3:00 PM", priority: "Rush" },
-  { client: "Fitzroy Brokers", color: "#E2A500", title: "Nicholson St #24", when: "Tomorrow · 10:00 AM", priority: "Standard" },
-  { client: "Springfield Realestate", color: "#C04747", title: "Hilltop Dr", when: "May 16 · 9:30 AM", priority: "Standard" },
+// Active jobs linking to client pages
+const activeJobs = [
+  { id: "CABIN-e5c7", title: "Rodeo Dr, Beverly Hills", clientSlug: "cabin", clientName: "Cabin", stage: "Editing", photos: 24, due: "Today" },
+  { id: "JOE-2b91", title: "Nicholson St #24", clientSlug: "joe-bullock-test", clientName: "Joe Bullock Test", stage: "QC Review", photos: 18, due: "Tomorrow" },
+  { id: "SPRING-7f3a", title: "Hilltop Dr", clientSlug: "springfield-realestate", clientName: "Springfield Realestate", stage: "Ingest", photos: 32, due: "May 16" },
+  { id: "NORTH-9e1c", title: "Bay View Terrace", clientSlug: "northcote-realestate", clientName: "Northcote Realestate", stage: "Ready to Deliver", photos: 28, due: "May 17" },
+];
+
+const stageStyles: Record<string, string> = {
+  "Ingest": "bg-sky-500/10 text-sky-500 dark:text-sky-400 border-sky-500/20",
+  "Editing": "bg-ph-accent/15 text-[#B07A00] dark:text-ph-accent border-ph-accent/30",
+  "QC Review": "bg-rose-500/10 text-rose-500 dark:text-rose-400 border-rose-500/20",
+  "Ready to Deliver": "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20",
+};
+
+// Top clients
+const topClients = [
+  { name: "Springfield Realestate", slug: "springfield-realestate", initial: "S", activeJobs: 3, openRevisions: 4 },
+  { name: "Gmail", slug: "gmail", initial: "G", activeJobs: 1, openRevisions: 2 },
+  { name: "Joe Bullock Test", slug: "joe-bullock-test", initial: "J", activeJobs: 2, openRevisions: 1 },
+  { name: "Northcote Realestate", slug: "northcote-realestate", initial: "N", activeJobs: 1, openRevisions: 1 },
 ];
 
 // KPIs
 const kpis = [
-  { label: "Active jobs", value: "18", delta: "+3", trend: "up" },
-  { label: "On-time delivery", value: "94%", delta: "+2.1%", trend: "up" },
+  { label: "Jobs delivered", value: "42", delta: "+8 vs last wk", trend: "up" },
+  { label: "On-time rate", value: "94%", delta: "+2.1%", trend: "up" },
   { label: "Avg turnaround", value: "4.2h", delta: "-12m", trend: "up" },
-  { label: "Photos this week", value: "1,284", delta: "+186", trend: "up" },
+  { label: "Photos processed", value: "1,284", delta: "+186", trend: "up" },
 ];
 
 function ActionCard({ a }: { a: (typeof actions)[number] }) {
@@ -286,38 +302,79 @@ function OverviewTab() {
             </div>
           </Panel>
 
-          {/* Upcoming */}
+          {/* Active jobs */}
           <Panel padding="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <Eyebrow>Upcoming Shoots</Eyebrow>
+                <Eyebrow>Active Jobs</Eyebrow>
                 <h3 className="mt-1 font-manrope text-[18px] font-bold text-ph-azure11 dark:text-ph-zircon">
-                  Next 7 days
+                  In flight across your clients
                 </h3>
               </div>
               <Link href="/app/clients" className="font-inter text-[12.5px] font-semibold text-ph-azure11/70 dark:text-ph-zircon/70 hover:text-ph-accent">
-                View calendar →
+                All clients →
               </Link>
             </div>
             <div className="mt-4 flex flex-col gap-2">
-              {upcoming.map((u, i) => (
-                <div key={i} className="flex items-center gap-3 rounded-[14px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] px-4 py-3">
-                  <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] font-manrope text-[14px] font-bold text-white" style={{ backgroundColor: u.color }}>
-                    {u.client.charAt(0)}
+              {activeJobs.map((j) => (
+                <Link
+                  key={j.id}
+                  href={`/app/clients/${j.clientSlug}/jobs/${j.id.toLowerCase()}`}
+                  className="group flex items-center gap-3 rounded-[14px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] px-4 py-3 transition hover:border-ph-accent/40 hover:bg-black/[0.02] dark:hover:bg-white/[0.05]"
+                >
+                  <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border border-[rgba(23,26,32,0.08)] dark:border-white/[0.10] bg-black/[0.04] dark:bg-white/[0.06] font-manrope text-[13px] font-bold text-ph-azure11 dark:text-ph-zircon">
+                    {j.clientName.charAt(0)}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">{u.title}</p>
-                    <p className="font-inter text-[12px] text-ph-azure11/55 dark:text-ph-zircon/55">{u.client} · {u.when}</p>
+                    <p className="truncate font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">{j.title}</p>
+                    <p className="font-inter text-[12px] text-ph-azure11/55 dark:text-ph-zircon/55">{j.clientName} · {j.photos} photos · due {j.due}</p>
                   </div>
-                  {u.priority === "Rush" && (
-                    <span className="rounded-full bg-[rgba(226,165,0,0.15)] px-2.5 py-0.5 font-inter text-[10.5px] font-bold uppercase tracking-[1px] text-[#B07A00] dark:text-ph-accent">
-                      Rush
-                    </span>
-                  )}
-                  <button className="font-inter text-[12px] font-semibold text-ph-azure11/70 dark:text-ph-zircon/70 hover:text-ph-accent">
-                    Prep →
-                  </button>
-                </div>
+                  <span className={`rounded-full border px-2.5 py-0.5 font-inter text-[10.5px] font-bold uppercase tracking-[1px] ${stageStyles[j.stage]}`}>
+                    {j.stage}
+                  </span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ph-azure11/35 dark:text-ph-zircon/35 transition group-hover:translate-x-0.5 group-hover:text-ph-accent">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </Link>
+              ))}
+            </div>
+          </Panel>
+
+          {/* Top clients */}
+          <Panel padding="p-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <Eyebrow>Top Clients</Eyebrow>
+                <h3 className="mt-1 font-manrope text-[18px] font-bold text-ph-azure11 dark:text-ph-zircon">
+                  Most active this month
+                </h3>
+              </div>
+              <Link href="/app/clients" className="font-inter text-[12.5px] font-semibold text-ph-azure11/70 dark:text-ph-zircon/70 hover:text-ph-accent">
+                View all clients →
+              </Link>
+            </div>
+            <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-2">
+              {topClients.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/app/clients/${c.slug}`}
+                  className="group flex items-center gap-3 rounded-[14px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] px-4 py-3 transition hover:border-ph-accent/40 hover:bg-black/[0.02] dark:hover:bg-white/[0.05]"
+                >
+                  <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border border-[rgba(23,26,32,0.08)] dark:border-white/[0.10] bg-black/[0.04] dark:bg-white/[0.06] font-manrope text-[13px] font-bold text-ph-azure11 dark:text-ph-zircon">
+                    {c.initial}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">{c.name}</p>
+                    <p className="font-inter text-[11.5px] text-ph-azure11/55 dark:text-ph-zircon/55">
+                      {c.activeJobs} active · {c.openRevisions} revisions
+                    </p>
+                  </div>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ph-azure11/35 dark:text-ph-zircon/35 transition group-hover:translate-x-0.5 group-hover:text-ph-accent">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </Link>
               ))}
             </div>
           </Panel>
