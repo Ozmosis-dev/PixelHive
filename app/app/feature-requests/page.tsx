@@ -1,6 +1,23 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
+
+function Breadcrumb() {
+  return (
+    <nav className="flex items-center gap-2 font-inter text-[13px] text-ph-azure11/55 dark:text-ph-zircon/55">
+      <Link href="/app/clients" className="flex items-center gap-1.5 hover:text-ph-azure11 dark:hover:text-ph-zircon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 12l9-9 9 9" />
+          <path d="M5 10v10h14V10" />
+        </svg>
+        Clients
+      </Link>
+      <span className="text-ph-azure11/30 dark:text-ph-zircon/30">›</span>
+      <span className="text-ph-azure11 dark:text-ph-zircon">Feature Requests</span>
+    </nav>
+  );
+}
 
 const statuses = ["All", "Open", "Under Review", "Planned", "In Progress", "Completed", "Spam"];
 
@@ -18,8 +35,8 @@ export default function FeatureRequestsPage() {
             "radial-gradient(800px 200px at 0 0, rgba(255,194,71,0.10) 0%, rgba(255,194,71,0) 60%)",
         }}
       >
-        <p className="font-inter text-[12px] font-bold uppercase tracking-[2px] text-ph-accent">Feature Requests</p>
-        <h1 className="mt-2 font-manrope text-[44px] font-bold leading-[48px] tracking-[-1.4px] text-ph-azure11 dark:text-ph-zircon">Feature Requests</h1>
+        <Breadcrumb />
+        <h1 className="mt-4 font-manrope text-[44px] font-bold leading-[48px] tracking-[-1.4px] text-ph-azure11 dark:text-ph-zircon">Feature Requests</h1>
         <p className="mt-2 font-inter text-[15px] text-ph-azure11/55 dark:text-ph-zircon/55">Suggest, discuss, and vote on ideas to improve the platform</p>
       </div>
 

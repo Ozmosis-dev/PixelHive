@@ -3,18 +3,20 @@ import PhotosSection from "@/components/app/PhotosSection";
 
 function Breadcrumb({ client, title }: { client: string; title: string }) {
   return (
-    <nav className="flex items-center gap-2 font-inter text-[13px]">
-      <Link href="/app/clients" className="flex items-center gap-1.5 text-white/70 hover:text-white">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <nav className="flex items-center gap-2 font-inter text-[13px] text-ph-azure11/55 dark:text-ph-zircon/55">
+      <Link href="/app/clients" className="flex items-center gap-1.5 hover:text-ph-azure11 dark:hover:text-ph-zircon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 12l9-9 9 9" />
           <path d="M5 10v10h14V10" />
         </svg>
-        <span>Clients</span>
+        Clients
       </Link>
-      <span className="text-white/40">›</span>
-      <Link href={`/app/clients/${client}`} className="text-white/70 hover:text-white">{client.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}</Link>
-      <span className="text-white/40">›</span>
-      <span className="text-white">{title}</span>
+      <span className="text-ph-azure11/30 dark:text-ph-zircon/30">›</span>
+      <Link href={`/app/clients/${client}`} className="hover:text-ph-azure11 dark:hover:text-ph-zircon">
+        {client.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+      </Link>
+      <span className="text-ph-azure11/30 dark:text-ph-zircon/30">›</span>
+      <span className="text-ph-azure11 dark:text-ph-zircon">{title}</span>
     </nav>
   );
 }
