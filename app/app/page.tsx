@@ -7,7 +7,7 @@ const darkPanelBg =
 
 const lightPanelBg = "linear-gradient(180deg, #FFFFFF 0%, #FBF8EE 100%)";
 
-type Tab = "overview" | "pipeline" | "team" | "billing";
+type Tab = "overview" | "pipeline" | "team" | "billing" | "settings";
 
 function Tabs({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
   const items: { key: Tab; label: string }[] = [
@@ -15,6 +15,7 @@ function Tabs({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
     { key: "pipeline", label: "Pipeline" },
     { key: "team", label: "Team" },
     { key: "billing", label: "Billing" },
+    { key: "settings", label: "Settings" },
   ];
   return (
     <div className="inline-flex items-center rounded-full border border-[rgba(23,26,32,0.06)] dark:border-white/[0.08] bg-white dark:bg-[#10151D] p-1">
@@ -441,11 +442,58 @@ function PipelineTab() {
 
 function TeamTab() {
   const team = [
-    { name: "Sarah Johnson", role: "Lead Editor", active: 4, today: 12 },
-    { name: "Mike Wilson", role: "Photographer", active: 2, today: 6 },
-    { name: "Carla Lopez", role: "QC Reviewer", active: 3, today: 9 },
-    { name: "Daniel Villafranca", role: "Owner", active: 1, today: 4 },
+    {
+      name: "Sarah Johnson",
+      role: "Lead Editor",
+      email: "sarah.johnson@pixelhive.app",
+      active: 4,
+      today: 12,
+      jobs: [
+        { id: "CABIN-e5c7", title: "Rodeo Dr · Beverly Hills", stage: "Editing", due: "Today" },
+        { id: "JOE-2b91", title: "Nicholson St #24", stage: "QC Review", due: "Tomorrow" },
+        { id: "SPRING-7f3a", title: "Hilltop Dr", stage: "Editing", due: "May 16" },
+      ],
+    },
+    {
+      name: "Mike Wilson",
+      role: "Photographer",
+      email: "mike.wilson@pixelhive.app",
+      active: 2,
+      today: 6,
+      jobs: [
+        { id: "NORTH-9e1c", title: "Bay View Terrace", stage: "Ingest", due: "May 17" },
+        { id: "FITZ-4d22", title: "Fitzroy Brokers Set", stage: "Ingest", due: "May 18" },
+      ],
+    },
+    {
+      name: "Carla Lopez",
+      role: "QC Reviewer",
+      email: "carla.lopez@pixelhive.app",
+      active: 3,
+      today: 9,
+      jobs: [
+        { id: "JOE-2b91", title: "Nicholson St #24", stage: "QC Review", due: "Tomorrow" },
+        { id: "BAY-8c10", title: "Bay View Terrace", stage: "QC Review", due: "May 17" },
+        { id: "MAPLE-3a45", title: "Maple Ave", stage: "QC Review", due: "May 19" },
+      ],
+    },
+    {
+      name: "Daniel Villafranca",
+      role: "Owner",
+      email: "daniel@pixelhive.app",
+      active: 1,
+      today: 4,
+      jobs: [{ id: "OAK-1f88", title: "Oak St", stage: "Ready to Deliver", due: "May 17" }],
+    },
   ];
+
+  const stageTone: Record<string, string> = {
+    "Ingest": "bg-sky-500/10 text-sky-500 dark:text-sky-400",
+    "Editing": "bg-ph-accent/15 text-[#B07A00] dark:text-ph-accent",
+    "QC Review": "bg-rose-500/10 text-rose-500 dark:text-rose-400",
+    "Ready to Deliver": "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400",
+  };
+
   return (
     <div className="mt-6">
       <Panel padding="p-5">
@@ -462,17 +510,39 @@ function TeamTab() {
         </div>
         <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
           {team.map((m) => (
-            <div key={m.name} className="flex items-center gap-3 rounded-[14px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] p-4">
-              <span className="flex h-10 w-10 items-center justify-center rounded-[12px] border border-[rgba(23,26,32,0.08)] dark:border-white/[0.10] bg-black/[0.04] dark:bg-white/[0.06] font-manrope text-[15px] font-bold text-ph-azure11 dark:text-ph-zircon">
-                {m.name.charAt(0)}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="font-inter text-[14px] font-semibold text-ph-azure11 dark:text-ph-zircon">{m.name}</p>
-                <p className="font-inter text-[12px] text-ph-azure11/55 dark:text-ph-zircon/55">{m.role}</p>
+            <div key={m.name} className="flex flex-col gap-4 rounded-[14px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] p-4">
+              <div className="flex items-start gap-3">
+                <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-[12px] border border-[rgba(23,26,32,0.08)] dark:border-white/[0.10] bg-black/[0.04] dark:bg-white/[0.06] font-manrope text-[15px] font-bold text-ph-azure11 dark:text-ph-zircon">
+                  {m.name.charAt(0)}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-inter text-[14px] font-semibold text-ph-azure11 dark:text-ph-zircon">{m.name}</p>
+                  <p className="font-inter text-[12px] text-ph-azure11/55 dark:text-ph-zircon/55">{m.role}</p>
+                  <a href={`mailto:${m.email}`} className="mt-1 flex items-center gap-1.5 font-inter text-[11.5px] text-ph-azure11/50 dark:text-ph-zircon/50 hover:text-ph-accent">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="5" width="18" height="14" rx="2" />
+                      <polyline points="3 7 12 13 21 7" />
+                    </svg>
+                    {m.email}
+                  </a>
+                </div>
+                <div className="text-right">
+                  <p className="font-manrope text-[16px] font-bold text-ph-azure11 dark:text-ph-zircon tabular-nums">{m.active}<span className="ml-1 font-inter text-[11px] font-normal text-ph-azure11/45 dark:text-ph-zircon/40">active</span></p>
+                  <p className="font-inter text-[11px] text-ph-azure11/55 dark:text-ph-zircon/55">{m.today} today</p>
+                </div>
               </div>
-              <div className="text-right">
-                <p className="font-manrope text-[16px] font-bold text-ph-azure11 dark:text-ph-zircon tabular-nums">{m.active}<span className="ml-1 font-inter text-[11px] font-normal text-ph-azure11/45 dark:text-ph-zircon/40">active</span></p>
-                <p className="font-inter text-[11px] text-ph-azure11/55 dark:text-ph-zircon/55">{m.today} today</p>
+
+              <div className="rounded-[10px] border border-[rgba(23,26,32,0.05)] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02] p-3">
+                <p className="mb-2 font-inter text-[10px] font-bold uppercase tracking-[0.8px] text-ph-azure11/45 dark:text-ph-zircon/45">Assigned Jobs · {m.jobs.length}</p>
+                <ul className="flex flex-col gap-1.5">
+                  {m.jobs.map((j) => (
+                    <li key={j.id} className="flex items-center gap-2">
+                      <span className={`flex-shrink-0 rounded-full px-2 py-0.5 font-inter text-[10px] font-semibold ${stageTone[j.stage]}`}>{j.stage}</span>
+                      <span className="min-w-0 flex-1 truncate font-inter text-[12.5px] text-ph-azure11/85 dark:text-ph-zircon/85">{j.title}</span>
+                      <span className="font-inter text-[11px] text-ph-azure11/50 dark:text-ph-zircon/50">{j.due}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           ))}
@@ -523,6 +593,399 @@ function BillingTab() {
   );
 }
 
+const photographyServices = [
+  "Interior Photography (20-30 photos)",
+  "Exterior Photography (5-10 photos)",
+  "Drone Photography (10-15 photos)",
+  "Virtual Staging (per room)",
+  "Twilight Photography",
+];
+
+const workspaceLimits = [
+  {
+    label: "Max Users",
+    value: "3",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+  },
+  {
+    label: "Max Workspaces",
+    value: "1",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </svg>
+    ),
+  },
+  {
+    label: "Max Storage",
+    value: "1GB",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <ellipse cx="12" cy="5" rx="9" ry="3" />
+        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+      </svg>
+    ),
+  },
+  {
+    label: "Max API Calls",
+    value: "1000/month",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="16 18 22 12 16 6" />
+        <polyline points="8 6 2 12 8 18" />
+      </svg>
+    ),
+  },
+];
+
+function SectionHeader({ icon, title, action }: { icon: React.ReactNode; title: string; action?: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-2.5">
+        <span className="text-[#B07A00] dark:text-ph-accent">{icon}</span>
+        <h3 className="font-manrope text-[15.5px] font-bold tracking-[-0.2px] text-ph-azure11 dark:text-ph-zircon">{title}</h3>
+      </div>
+      {action}
+    </div>
+  );
+}
+
+function SettingsTab() {
+  const [services, setServices] = useState<string[]>([]);
+  const [breakdownOpen, setBreakdownOpen] = useState(false);
+
+  const toggleService = (s: string) =>
+    setServices((prev) => (prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]));
+
+  return (
+    <div className="mt-6 grid grid-cols-12 gap-4">
+      {/* Workspace identity */}
+      <div className="col-span-12">
+        <Panel padding="p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <Eyebrow>Workspace</Eyebrow>
+              <h2 className="font-manrope text-[22px] font-bold tracking-[-0.4px] text-ph-azure11 dark:text-ph-zircon">Main Demo Account</h2>
+              <span className="font-inter text-[12.5px] text-ph-azure11/55 dark:text-ph-zircon/55">· Default workspace</span>
+              <span className="inline-flex items-center rounded-full bg-ph-azure11 dark:bg-white/[0.10] px-2.5 py-0.5 font-inter text-[10.5px] font-bold uppercase tracking-[0.8px] text-white dark:text-ph-zircon">
+                Owner
+              </span>
+            </div>
+            <button
+              aria-label="Edit workspace"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-ph-azure11/55 dark:text-ph-zircon/55 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] hover:text-ph-azure11 dark:hover:text-ph-zircon transition-colors"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg>
+            </button>
+          </div>
+        </Panel>
+      </div>
+
+      {/* Profile */}
+      <div className="col-span-12 lg:col-span-6">
+        <Panel padding="p-5" className="h-full">
+          <SectionHeader
+            title="Profile"
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            }
+            action={
+              <button className="flex items-center gap-1.5 rounded-full border border-[rgba(23,26,32,0.10)] dark:border-white/[0.12] bg-white dark:bg-white/[0.04] px-3 py-1.5 font-inter text-[11.5px] font-semibold text-ph-azure11 dark:text-ph-zircon hover:border-ph-accent/60">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 20h9" />
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                </svg>
+                Edit Profile
+              </button>
+            }
+          />
+          <div className="mt-4 flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-ph-accent font-manrope text-[20px] font-bold text-ph-azure11">P</div>
+            <div className="min-w-0">
+              <p className="font-manrope text-[16px] font-bold text-ph-azure11 dark:text-ph-zircon">pixelhivedemo</p>
+              <p className="font-inter text-[12.5px] text-ph-azure11/60 dark:text-ph-zircon/60">demo@pixelhive.app</p>
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="rounded-[10px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.03] px-3 py-2.5">
+              <p className="font-inter text-[10.5px] uppercase tracking-[0.6px] text-ph-azure11/50 dark:text-ph-zircon/50">Role</p>
+              <p className="mt-0.5 font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">Owner</p>
+            </div>
+            <div className="rounded-[10px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.03] px-3 py-2.5">
+              <p className="font-inter text-[10.5px] uppercase tracking-[0.6px] text-ph-azure11/50 dark:text-ph-zircon/50">Member Since</p>
+              <p className="mt-0.5 font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">May 2026</p>
+            </div>
+            <div className="rounded-[10px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.03] px-3 py-2.5">
+              <p className="font-inter text-[10.5px] uppercase tracking-[0.6px] text-ph-azure11/50 dark:text-ph-zircon/50">Timezone</p>
+              <p className="mt-0.5 font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">PT (UTC−8)</p>
+            </div>
+            <div className="rounded-[10px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.03] px-3 py-2.5">
+              <p className="font-inter text-[10.5px] uppercase tracking-[0.6px] text-ph-azure11/50 dark:text-ph-zircon/50">Phone</p>
+              <p className="mt-0.5 font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">—</p>
+            </div>
+          </div>
+        </Panel>
+      </div>
+
+      {/* Security */}
+      <div className="col-span-12 lg:col-span-6">
+        <Panel padding="p-5" className="h-full">
+          <SectionHeader
+            title="Security"
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            }
+          />
+          <div className="mt-4 flex flex-col gap-3">
+            <div className="flex items-center justify-between rounded-[12px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.03] px-4 py-3">
+              <div className="min-w-0">
+                <p className="font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">Password</p>
+                <p className="font-inter text-[12px] text-ph-azure11/55 dark:text-ph-zircon/55">Last changed 3 months ago</p>
+              </div>
+              <button className="flex items-center gap-1.5 rounded-full border border-[rgba(23,26,32,0.10)] dark:border-white/[0.12] bg-white dark:bg-white/[0.04] px-3.5 py-1.5 font-inter text-[12px] font-semibold text-ph-azure11 dark:text-ph-zircon hover:border-ph-accent/60">
+                Change Password
+              </button>
+            </div>
+            <div className="flex items-center justify-between rounded-[12px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.03] px-4 py-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">Email</p>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 font-inter text-[10.5px] font-semibold text-[#B07A00] dark:text-ph-accent">
+                    <span className="h-1.5 w-1.5 rounded-full bg-ph-accent" /> Unverified
+                  </span>
+                </div>
+                <p className="font-inter text-[12px] text-ph-azure11/55 dark:text-ph-zircon/55">demo@pixelhive.app</p>
+              </div>
+              <button className="rounded-full bg-ph-accent px-3.5 py-1.5 font-inter text-[12px] font-semibold text-ph-azure11 hover:bg-ph-yellow-mid">
+                Verify Email
+              </button>
+            </div>
+            <div className="flex items-center justify-between rounded-[12px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.03] px-4 py-3">
+              <div className="min-w-0">
+                <p className="font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">Two-Factor Auth</p>
+                <p className="font-inter text-[12px] text-ph-azure11/55 dark:text-ph-zircon/55">Add an extra layer of security</p>
+              </div>
+              <button className="flex items-center gap-1.5 rounded-full border border-[rgba(23,26,32,0.10)] dark:border-white/[0.12] bg-white dark:bg-white/[0.04] px-3.5 py-1.5 font-inter text-[12px] font-semibold text-ph-azure11 dark:text-ph-zircon hover:border-ph-accent/60">
+                Enable
+              </button>
+            </div>
+          </div>
+        </Panel>
+      </div>
+
+      {/* Storage Usage — wide */}
+      <div className="col-span-12 lg:col-span-6">
+        <Panel padding="p-5" className="h-full">
+          <SectionHeader
+            title="Storage Usage"
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            }
+            action={
+              <button className="flex items-center gap-1.5 rounded-full border border-[rgba(23,26,32,0.10)] dark:border-white/[0.12] bg-white dark:bg-white/[0.04] px-3 py-1.5 font-inter text-[11.5px] font-semibold text-ph-azure11 dark:text-ph-zircon hover:border-ph-accent/60">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="23 4 23 10 17 10" />
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                </svg>
+                Refresh
+              </button>
+            }
+          />
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            {[
+              { label: "Total Storage", value: "2.24 MB" },
+              { label: "Total Files", value: "1" },
+              { label: "Data Source", value: "s3" },
+            ].map((s) => (
+              <div key={s.label} className="rounded-[10px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] px-3 py-2.5">
+                <p className="font-manrope text-[18px] font-bold tracking-[-0.3px] text-ph-azure11 dark:text-ph-zircon">{s.value}</p>
+                <p className="mt-0.5 font-inter text-[10.5px] uppercase tracking-[0.6px] text-ph-azure11/50 dark:text-ph-zircon/50">{s.label}</p>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={() => setBreakdownOpen((o) => !o)}
+            className="mt-2 flex w-full items-center justify-between rounded-[10px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] px-3.5 py-2.5"
+          >
+            <span className="flex items-center gap-2.5">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="text-ph-azure11/55 dark:text-ph-zircon/55">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+              </svg>
+              <span className="font-inter text-[12.5px] font-semibold text-ph-azure11 dark:text-ph-zircon">File Breakdown</span>
+              <span className="font-inter text-[11px] text-ph-azure11/50 dark:text-ph-zircon/50">· 1 file</span>
+            </span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`text-ph-azure11/45 dark:text-ph-zircon/45 transition-transform ${breakdownOpen ? "rotate-180" : ""}`}>
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          {breakdownOpen && (
+            <div className="mt-2 rounded-[10px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.025] px-3.5 py-2.5 font-inter text-[12px] text-ph-azure11/65 dark:text-ph-zircon/65">
+              No detailed breakdown available yet.
+            </div>
+          )}
+        </Panel>
+      </div>
+
+      {/* Workspace Limits — narrow */}
+      <div className="col-span-12 lg:col-span-6">
+        <Panel padding="p-5" className="h-full">
+          <SectionHeader
+            title="Workspace Limits"
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            }
+          />
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            {workspaceLimits.map((l) => (
+              <div key={l.label} className="rounded-[10px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] px-3 py-2.5">
+                <span className="flex items-center gap-1.5 font-inter text-[10.5px] uppercase tracking-[0.6px] text-ph-azure11/50 dark:text-ph-zircon/50">
+                  <span className="text-ph-azure11/40 dark:text-ph-zircon/40">{l.icon}</span>
+                  {l.label}
+                </span>
+                <p className="mt-1 font-manrope text-[16px] font-bold text-ph-azure11 dark:text-ph-zircon tabular-nums">{l.value}</p>
+              </div>
+            ))}
+          </div>
+        </Panel>
+      </div>
+
+      {/* Photography Services */}
+      <div className="col-span-12 lg:col-span-6">
+        <Panel padding="p-5" className="h-full">
+          <SectionHeader
+            title="Photography Services"
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+            }
+            action={
+              <button className="rounded-full bg-ph-azure11 dark:bg-ph-accent px-4 py-1.5 font-inter text-[12px] font-semibold text-white dark:text-ph-azure11 hover:bg-black dark:hover:bg-ph-yellow-mid transition-colors">
+                Save
+              </button>
+            }
+          />
+          <div className="mt-3 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+            {photographyServices.map((s) => {
+              const on = services.includes(s);
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => toggleService(s)}
+                  className={`flex items-center gap-2.5 rounded-[10px] border px-3 py-2 text-left transition-colors ${
+                    on
+                      ? "border-ph-accent/40 bg-ph-accent/8"
+                      : "border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-white dark:bg-white/[0.03] hover:border-ph-accent/30"
+                  }`}
+                  aria-pressed={on}
+                >
+                  <span
+                    className={`flex h-[16px] w-[16px] flex-shrink-0 items-center justify-center rounded-[4px] border transition-colors ${
+                      on
+                        ? "border-ph-accent bg-ph-accent text-ph-azure11"
+                        : "border-[rgba(23,26,32,0.20)] dark:border-white/[0.20]"
+                    }`}
+                  >
+                    {on && (
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                  </span>
+                  <span className="font-inter text-[12.5px] text-ph-azure11/85 dark:text-ph-zircon/85">{s}</span>
+                </button>
+              );
+            })}
+          </div>
+        </Panel>
+      </div>
+
+      {/* Notification Templates */}
+      <div className="col-span-12 lg:col-span-6">
+        <Panel padding="p-5" className="h-full">
+          <SectionHeader
+            title="Notification Templates"
+            icon={
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+            }
+          />
+          <p className="mt-3 font-inter text-[12.5px] text-ph-azure11/65 dark:text-ph-zircon/65">
+            Configure email notification templates for your workspace.
+          </p>
+          <Link
+            href="/app/notification-templates"
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-ph-azure11 dark:bg-ph-accent px-4 py-2 font-inter text-[12.5px] font-semibold text-white dark:text-ph-azure11 hover:bg-black dark:hover:bg-ph-yellow-mid transition-colors"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            Manage Templates
+          </Link>
+        </Panel>
+      </div>
+
+      {/* Danger Zone */}
+      <div className="col-span-12">
+        <Panel padding="p-5" className="border-rose-500/25 dark:border-rose-500/25">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="text-rose-500 dark:text-rose-400">
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              <div>
+                <h3 className="font-manrope text-[15.5px] font-bold tracking-[-0.2px] text-rose-500 dark:text-rose-400">Danger Zone</h3>
+                <p className="font-inter text-[12px] text-ph-azure11/55 dark:text-ph-zircon/55">Permanent actions. Cannot be undone.</p>
+              </div>
+            </div>
+            <button className="flex items-center gap-2 rounded-full border border-rose-500/30 bg-rose-500/8 px-4 py-2 font-inter text-[12.5px] font-semibold text-rose-500 dark:text-rose-400 hover:bg-rose-500/12 transition-colors">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6" />
+                <path d="M10 11v6M14 11v6" />
+              </svg>
+              Delete Workspace
+            </button>
+          </div>
+        </Panel>
+      </div>
+    </div>
+  );
+}
+
 export default function WorkspaceDashboard() {
   const [tab, setTab] = useState<Tab>("overview");
 
@@ -539,21 +1002,23 @@ export default function WorkspaceDashboard() {
 
       <div className="relative mx-auto max-w-[1280px] px-8 pt-10 pb-16">
         {/* Hero */}
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="flex items-center gap-5">
-            <div className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] bg-ph-azure11 dark:bg-ph-accent font-manrope text-[32px] font-bold text-white dark:text-ph-azure11 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
-              P
-            </div>
-            <div>
-              <Eyebrow>Welcome back</Eyebrow>
-              <h1 className="mt-1 font-manrope text-[36px] font-bold leading-[40px] tracking-[-1px] text-ph-azure11 dark:text-ph-zircon">
-                Pixel Hive
-              </h1>
-              <p className="mt-1 font-inter text-[13.5px] text-ph-azure11/55 dark:text-ph-zircon/55">
-                The Pixel Hive Team · 11 clients · 18 jobs in flight
-              </p>
-            </div>
+        <div className="flex items-center gap-5">
+          <div className="flex h-[72px] w-[72px] items-center justify-center rounded-[20px] bg-ph-azure11 dark:bg-ph-accent font-manrope text-[32px] font-bold text-white dark:text-ph-azure11 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
+            P
           </div>
+          <div>
+            <Eyebrow>Welcome back</Eyebrow>
+            <h1 className="mt-1 font-manrope text-[36px] font-bold leading-[40px] tracking-[-1px] text-ph-azure11 dark:text-ph-zircon">
+              pixelhivedemo
+            </h1>
+            <p className="mt-1 font-inter text-[13.5px] text-ph-azure11/55 dark:text-ph-zircon/55">
+              Main Demo Account · 11 clients · 18 jobs in flight
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          <Tabs tab={tab} setTab={setTab} />
           <div className="flex items-center gap-3">
             <Link href="/app/clients" className="flex items-center gap-2 rounded-full border border-[rgba(23,26,32,0.10)] dark:border-white/[0.12] bg-white dark:bg-white/[0.04] px-5 py-2.5 font-inter text-[13.5px] font-semibold text-ph-azure11 dark:text-ph-zircon hover:border-ph-accent/60">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -573,14 +1038,11 @@ export default function WorkspaceDashboard() {
           </div>
         </div>
 
-        <div className="mt-6">
-          <Tabs tab={tab} setTab={setTab} />
-        </div>
-
         {tab === "overview" && <OverviewTab />}
         {tab === "pipeline" && <PipelineTab />}
         {tab === "team" && <TeamTab />}
         {tab === "billing" && <BillingTab />}
+        {tab === "settings" && <SettingsTab />}
       </div>
     </div>
   );

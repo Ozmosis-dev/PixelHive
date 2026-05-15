@@ -133,15 +133,15 @@ function Disclosure({
 
 function MetaRow({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 py-2.5">
-      <span className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-[8px] border border-[rgba(23,26,32,0.06)] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.03] text-ph-azure11/55 dark:text-ph-zircon/55">
+    <div className="relative flex items-center gap-5 py-3">
+      <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center text-ph-azure11/55 dark:text-ph-zircon/55">
         {icon}
       </span>
       <div className="min-w-0 flex-1">
         <p className="font-inter text-[10.5px] font-semibold uppercase tracking-[0.6px] text-ph-azure11/40 dark:text-ph-zircon/40">
           {label}
         </p>
-        <div className="mt-0.5 font-inter text-[13.5px] text-ph-azure11/85 dark:text-ph-zircon/85 break-words">
+        <div className="mt-1 font-inter text-[13.5px] text-ph-azure11/85 dark:text-ph-zircon/85 break-words">
           {children}
         </div>
       </div>
@@ -201,7 +201,7 @@ function ReviewRow({ item }: { item: ReviewItem }) {
           </div>
         </div>
 
-        <div className="mt-4 divide-y divide-[rgba(23,26,32,0.05)] dark:divide-white/[0.05] border-y border-[rgba(23,26,32,0.05)] dark:border-white/[0.05]">
+        <div className="mt-4 [&>*+*]:border-t [&>*+*]:border-[rgba(23,26,32,0.05)] dark:[&>*+*]:border-white/[0.05] [&>*]:mr-8">
           <MetaRow
             label="Date & Time"
             icon={
